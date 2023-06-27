@@ -1,0 +1,25 @@
+apiVersion: admissionregistration.k8s.io/v1alpha1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: "cosign-policy"
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+      - apiGroups: ["apps"]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["deployments"]
+  validations:
+    - expression: "object.metadata.annotations['cosign.datree.io/valid'] != 'false'"
+      message: "This deployment is not signed by a valid cosign key"
+      reason: Invalid
+---
+apiVersion: admissionregistration.k8s.io/v1alpha1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: "cosign-policy-binding"
+spec:
+  policyName: "cosign-policy"
+  paramRef:
+    name: "cosign-policy-binding"

@@ -1,0 +1,12 @@
+# This is a sample cluster.yaml file for KIND
+# It is used to create a KIND cluster with the ValidatingAdmissionPolicy feature gate enabled
+apiVersion: kind.x-k8s.io/v1alpha4
+kind: Cluster
+name: demo-cel
+featureGates:
+  "ValidatingAdmissionPolicy": true
+runtimeConfig:
+  "admissionregistration.k8s.io/v1alpha1": true
+nodes:
+  - role: control-plane
+    image: kindest/node:v1.26.0

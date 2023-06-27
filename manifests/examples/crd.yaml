@@ -1,0 +1,43 @@
+# apiVersion: admissionregistration.k8s.io/v1alpha1
+# kind: ValidatingAdmissionPolicy
+# metadata:
+#   name: "cosign-policy"
+# spec:
+#   failurePolicy: Fail
+#   matchConstraints:
+#     resourceRules:
+#       - apiGroups: ["apps"]
+#         apiVersions: ["v1"]
+#         operations: ["CREATE", "UPDATE"]
+#         resources: ["deployments"]
+#   validations:
+#     - expression: "externalData(map(object.spec.template.spec.containers, image)) == 'true'"
+#       message: "This deployment is not signed by a valid cosign key"
+#       reason: Invalid
+# ---
+# apiVersion: something/v1
+# kind: ExternalValidatingPolicyBinding
+# metadata:
+#   name: cosign-policy-binding
+# spec:
+#   provider: cosign.sigstore.dev
+#   policyName: cosign-policy
+# ---
+# apiVersion: something/v1
+# kind: ExternalValidatingPolicy
+# metadata:
+#   name: cosign-policy
+# spec:
+#   provider: cosign.sigstore.dev
+#   policy:
+#     failurePolicy: Fail
+#     matchConstraints:
+#       resourceRules:
+#         - apiGroups: ["apps"]
+#           apiVersions: ["v1"]
+#           operations: ["CREATE", "UPDATE"]
+#           resources: ["deployments"]
+#     validations:
+#       - expression: "externalData(map(object.spec.template.spec.containers, image)) == 'true'"
+#         message: "This deployment is not signed by a valid cosign key"
+#         reason: Invalid
